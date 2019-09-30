@@ -8,9 +8,9 @@ public class Cell extends JPanel {
     private final int y;
     private final Enum type;
 
-    private int previousCost;
-    private int predictedCost;
-    private int totalCost;
+    public int previousCost;
+    public int predictedCost;
+    public int totalCost;
 
     public Cell(int x, int y, Enum type) {
         this.x = x;
@@ -29,6 +29,8 @@ public class Cell extends JPanel {
     public Enum getType() {
         return this.type;
     }
+
+
 
     public int getPreviousCost() {
         return previousCost;
@@ -77,6 +79,6 @@ public class Cell extends JPanel {
     }
 
     public enum TYPE {
-        NORMAL, BLOCKED;
+        NORMAL, BLOCKED, DEADEND;
     }
 }
