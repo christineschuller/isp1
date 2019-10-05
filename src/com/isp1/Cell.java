@@ -1,21 +1,27 @@
 package com.isp1;
 
-import javax.swing.*;
 import java.util.Objects;
 
-public class Cell extends JPanel {
+public class Cell {
     private final int x;
     private final int y;
-    private final Enum type;
+    private Enum type;
+    private int previousCost;
+    private int predictedCost;
+    private int selfCost;
 
-    public int previousCost;
-    public int predictedCost;
-    public int totalCost;
-
-    public Cell(int x, int y, Enum type) {
+    public Cell(int x, int y, Cell.TYPE type) {
         this.x = x;
         this.y = y;
-        this.type = type;
+        setType(type);
+    }
+
+    public int getSelfCost() {
+        return selfCost;
+    }
+
+    public void setSelfCost(int selfCost) {
+        this.selfCost = selfCost;
     }
 
     public int getX() {
@@ -30,7 +36,20 @@ public class Cell extends JPanel {
         return this.type;
     }
 
+    public void setType(Cell.TYPE type) {
+        this.type = type;
 
+        switch (type) {
+            case NORMAL:
+                setSelfCost(1);
+                break;
+            case BLOCKED:
+                // TODO: Implement blocked self cost. (Infinity?)
+                break;
+            default:
+                setSelfCost(1);
+        }
+    }
 
     public int getPreviousCost() {
         return previousCost;
@@ -50,10 +69,6 @@ public class Cell extends JPanel {
 
     public int getTotalCost() {
         return previousCost + predictedCost;
-    }
-
-    public void setTotalCost(int totalCost) {
-        this.totalCost = totalCost;
     }
 
     @Override
@@ -79,6 +94,6 @@ public class Cell extends JPanel {
     }
 
     public enum TYPE {
-        NORMAL, BLOCKED, DEADEND;
+        NORMAL, BLOCKED, DEADEND
     }
 }
