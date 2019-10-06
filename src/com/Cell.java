@@ -1,7 +1,10 @@
-package com.isp1;
+package com;
 
 import java.util.Objects;
 
+/** Store the value previousCost(the distance from the started cell to this cell), predictedCost(heuristic value?) and selfCost
+ *
+ */
 public class Cell {
     private final int x;
     private final int y;

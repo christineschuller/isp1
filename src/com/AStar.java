@@ -1,4 +1,4 @@
-package com.isp1;
+package com;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -58,6 +58,8 @@ public class AStar {
         return neighbour != null && !path.contains(neighbour) && neighbour.getType() != Cell.TYPE.BLOCKED;
     }
 
+
+
     public List<Cell> getPath() {
         setPredictedCosts();
 
@@ -69,51 +71,78 @@ public class AStar {
         boolean problem = false;
         while (!problem && !current.equals(target) && current.getType() != Cell.TYPE.DEADEND) {
             List<Cell> neighbours = new ArrayList<>();
-
+            //the neighbour of one cell cant not be restricted to only one on the top, there should also have other neighbor cells at the bottom , on the left/right.
+            // on the top
             Cell neighbour = board.get(current.getX(), current.getY() + 1);
+
             if (neighbourSanityCheck(path, neighbour)) {
                 neighbours.add(neighbour);
                 updatePreviousCost(path, neighbour);
             }
-
+            // on the right
             neighbour = board.get(current.getX() + 1, current.getY());
             if (neighbourSanityCheck(path, neighbour)) {
                 neighbours.add(neighbour);
                 updatePreviousCost(path, neighbour);
             }
-
+            // on the left
             neighbour = board.get(current.getX() - 1, current.getY());
             if (neighbourSanityCheck(path, neighbour)) {
                 neighbours.add(neighbour);
                 updatePreviousCost(path, neighbour);
             }
-
+            //at the bottom
             neighbour = board.get(current.getX(), current.getY() - 1);
             if (neighbourSanityCheck(path, neighbour)) {
                 neighbours.add(neighbour);
                 updatePreviousCost(path, neighbour);
             }
 
+            // add the target to the path if the it can be found in neighborhood
             if (neighbours.contains(target)) {
                 current = target;
                 path.add(current);
                 continue;
             }
 
+            // check if the neighbour is type DEADEND
+            int blockEnd = 0;
+            Cell notThisCell = current; //
+
+            for(Cell cell : neighbours){
+                if(cell.getType() == Cell.TYPE.DEADEND ) {
+                    blockEnd ++;
+                }
+                if (blockEnd == 3) {
+                    notThisCell = cell;
+                }
+            }
+
             neighbours.sort(Comparator.comparingInt(Cell::getTotalCost));
 
             if (neighbours.size() > 0) {
+
                 Cell bestNeighbour = neighbours.get(0);
                 int bestCost = bestNeighbour.getTotalCost();
                 List<Cell> bestCostOptions = neighbours.stream().filter(e -> e.getTotalCost() == bestCost).collect(Collectors.toList());
                 Random rand = new Random();
                 current = bestCostOptions.get(rand.nextInt(bestCostOptions.size()));
+
+                // if this current cell is not suitable to choose, so choose another one
+                if(current == notThisCell){
+                    current = bestCostOptions.get(rand.nextInt(bestCostOptions.size()));
+                }
+
                 path.add(current);
             } else {
                 problem = true;
             }
+
+
         }
-        // TODO: Make a step backwards if the cell has no options ( return to parent cell and choose the next best option ). Create a new Type NOFURTHERWAY ( es gibt ein Unterschied zwischen Blocked und Nofurtherway )
+
+        // TODO: Make a step backwards if the cell has no options( return to parent cell and choose the next best option ).Create a new Type NOFURTHERWAY ( es gibt ein Unterschied zwischen Blocked und Nofurtherway )
+
         return path;
     }
 

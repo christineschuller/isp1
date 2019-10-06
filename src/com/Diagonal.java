@@ -1,4 +1,4 @@
-package com.isp1;
+package com;
 
 public class Diagonal implements Heuristic {
     @Override

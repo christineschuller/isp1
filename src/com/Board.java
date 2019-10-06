@@ -1,6 +1,4 @@
-package com.isp1;
-
-import java.util.List;
+package com;
 
 public class Board {
     private final int width;
