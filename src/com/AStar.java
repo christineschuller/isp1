@@ -58,6 +58,29 @@ public class AStar {
         return neighbour != null && !path.contains(neighbour) && neighbour.getType() != Cell.TYPE.BLOCKED;
     }
 
+    private List<Cell> getNeighbourHood(Cell cell){
+        List<Cell> neighborhood = new ArrayList<>();
+
+        // on the top
+        Cell top = board.get(cell.getX(), cell.getY() + 1);
+
+        // on the right
+        Cell right = board.get(cell.getX() + 1, cell.getY());
+
+        // on the left
+        Cell left = board.get(cell.getX() - 1, cell.getY());
+
+        //at the bottom
+        Cell bottom = board.get(cell.getX(), cell.getY() - 1);
+
+        neighborhood.add(top);
+        neighborhood.add(left);
+        neighborhood.add(right);
+        neighborhood.add(bottom);
+
+        return neighborhood;
+    }
+
 
 
     public List<Cell> getPath() {
@@ -71,19 +94,21 @@ public class AStar {
         boolean problem = false;
         while (!problem && !current.equals(target) && current.getType() != Cell.TYPE.DEADEND) {
             List<Cell> neighbours = new ArrayList<>();
-            //the neighbour of one cell cant not be restricted to only one on the top, there should also have other neighbor cells at the bottom , on the left/right.
+
             // on the top
             Cell neighbour = board.get(current.getX(), current.getY() + 1);
 
             if (neighbourSanityCheck(path, neighbour)) {
                 neighbours.add(neighbour);
                 updatePreviousCost(path, neighbour);
+
             }
             // on the right
             neighbour = board.get(current.getX() + 1, current.getY());
             if (neighbourSanityCheck(path, neighbour)) {
                 neighbours.add(neighbour);
                 updatePreviousCost(path, neighbour);
+
             }
             // on the left
             neighbour = board.get(current.getX() - 1, current.getY());
@@ -107,16 +132,30 @@ public class AStar {
 
             // check if the neighbour is type DEADEND
             int blockEnd = 0;
-            Cell notThisCell = current; //
+            Cell notThisCell = current;
 
-            for(Cell cell : neighbours){
-                if(cell.getType() == Cell.TYPE.DEADEND ) {
-                    blockEnd ++;
-                }
-                if (blockEnd == 3) {
-                    notThisCell = cell;
+            for ( Cell thisCell : neighbours){
+                System.out.println(neighbours);
+                System.out.println("thisCell " + thisCell);
+
+                for (Cell cell : getNeighbourHood(thisCell)){
+                    System.out.println(cell);
+                    if(cell != null){
+                        System.out.println("cell Type " + cell.getType());
+                    }
+                    if(cell != null && cell.getType() == Cell.TYPE.BLOCKED) {
+                        blockEnd ++;
+                        continue;
+                    }
+                    if (blockEnd == 3) {
+                        notThisCell = thisCell;
+                        System.out.println("not this cell " + notThisCell);
+                        System.out.println("check in");
+                    }
                 }
             }
+            System.out.println("-------------------------------");
+
 
             neighbours.sort(Comparator.comparingInt(Cell::getTotalCost));
 

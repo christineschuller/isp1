@@ -96,7 +96,11 @@ public class Cell {
                 '}';
     }
 
+
+
     public enum TYPE {
         NORMAL, BLOCKED, DEADEND
     }
+
+
 }
