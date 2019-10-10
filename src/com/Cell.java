@@ -1,13 +1,15 @@
 package com;
 
+import javafx.scene.layout.StackPane;
+
 import java.util.Objects;
 
 /** Store the value previousCost(the distance from the started cell to this cell), predictedCost(heuristic value?) and selfCost
  *
  */
-public class Cell {
-    private final int x;
-    private final int y;
+public class Cell extends StackPane {
+     int x;
+     int y;
     private Enum type;
     private int previousCost;
     private int predictedCost;

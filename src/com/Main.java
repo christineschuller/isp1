@@ -2,6 +2,8 @@ package com;
 
 import java.util.List;
 
+import input.MouseDragGestures;
+import input.MousePaintGestures;
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -26,6 +28,44 @@ import javafx.stage.Stage;
 
 
 public class Main {
+
+        Board board = new Board(6,6);
+        AStar astar = new AStar(board);
+
+        MousePaintGestures mousePaint = new MousePaintGestures();
+        MouseDragGestures mouseDrag;
+
+        boolean autoPath = true;
+        boolean showSteps = true;
+
+        Cell start;
+        Cell end;
+
+        public void setUp(Stage stage){
+            try {
+                BorderPane root = new BorderPane();
+
+
+                //placeholder for the board
+                StackPane content = new StackPane();
+                root.setCenter(content);
+
+                //Toolbar for the button
+                HBox toolbar = new HBox();
+                toolbar.setAlignment(Pos.CENTER);
+                toolbar.setPadding(new Insets(20,20,20,20));
+                toolbar.setSpacing(5);
+
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+
+
+
+
 
         public static void main(String[] args) {
             Board board = new Board(4, 4);
