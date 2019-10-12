@@ -92,7 +92,7 @@ public class AStar {
         path.add(current);
 
         boolean problem = false;
-        while (!problem && !current.equals(target) && current.getType() != Cell.TYPE.DEADEND) {
+        while (!problem && !current.equals(target) && current.getType() != Cell.TYPE.DEADEND && current != null) {
             List<Cell> neighbours = new ArrayList<>();
 
             // on the top

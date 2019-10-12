@@ -53,6 +53,19 @@ public class Board extends Pane {
         } else {
             board[x][y] = cell;
         }
+        getChildren().add(cell);
+    }
+
+    /**
+     * Change cell type of all types to default type.
+     */
+    public void setType( Cell.TYPE type) {
+
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                board[row][col].setType( type);
+            }
+        }
     }
 
     /**

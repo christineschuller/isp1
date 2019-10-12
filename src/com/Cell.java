@@ -105,4 +105,9 @@ public class Cell extends StackPane {
     }
 
 
+    public void highlight() {
+        getStyleClass().add("path");
+    }
+
+
 }
