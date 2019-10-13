@@ -7,11 +7,13 @@ public class Board extends Pane {
     private final int width;
     private final int height;
     private final Cell[][] board;
+    private int cellSize = 50;
 
     public Board(int width, int height) {
         this.width = width;
         this.height = height;
         this.board = new Cell[width][height];
+
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -52,8 +54,25 @@ public class Board extends Pane {
             System.out.println("THIS PLACE DOES NOT EXISTS");
         } else {
             board[x][y] = cell;
+
+            // count of cells in the board
+
+            double posX = cellSize*x;
+            double posY = cellSize*y;
+
+            //set the style of the cell
+
+            cell.setLayoutX(posX);
+            cell.setLayoutY(posY);
+
+            cell.setPrefWidth(cellSize);
+            cell.setPrefWidth(cellSize);
+
+            //cell.getStyleClass().add("cell");
+
+            getChildren().add(cell);
         }
-        getChildren().add(cell);
+
     }
 
     /**
@@ -66,6 +85,24 @@ public class Board extends Pane {
                 board[row][col].setType( type);
             }
         }
+    }
+
+    public void addOverlay(int x, int y, Cell cell){
+        // count of cells in the board
+
+        double posX = cellSize*x;
+        double posY = cellSize*y;
+
+        //set the style of the cell
+        cell.setLayoutX(posX);
+        cell.setLayoutY(posY);
+
+        cell.setPrefWidth(cellSize);
+        cell.setPrefWidth(cellSize);
+
+        //cell.getStyleClass().add("cell");
+
+        getChildren().add(cell);
     }
 
     /**

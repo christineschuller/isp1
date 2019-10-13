@@ -8,6 +8,11 @@
     -fx-border-width: 3px;
     -fx-background-color:derive(#ff8423,0.9);
 }
+.cell{
+    -fx-border-color: #ff8423;
+    -fx-border-width: 3px;
+    -fx-background-color:derive(darkgray,0.9);
+}
 /*.open {
     -fx-background-color: rgba(255,0,0,0.1);
 }

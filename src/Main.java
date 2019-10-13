@@ -53,23 +53,23 @@ public class Main extends Application{
 
 
 
-    /*
+         /*
            ====== CONSTANTS ==============
             */
-        BooleanProperty stepViewProperty = new SimpleBooleanProperty( false);
+       // BooleanProperty stepViewProperty = new SimpleBooleanProperty( false);
         BooleanProperty showPathProperty = new SimpleBooleanProperty( true);
 
         MousePaintGestures mousePaint = new MousePaintGestures();
         MouseDragGestures mouseDrag;
 
         private boolean autoPath = true;
-        private boolean showSteps = true;
+        //private boolean showSteps = true;
 
         Cell start;
         Cell end;
 
         Label status;
-        Slider slider;
+        //Slider slider;
 
         @Override
         public void start(Stage stage){
@@ -169,7 +169,7 @@ public class Main extends Application{
                 //Generate Scence
                 Scene scene = new Scene(root,board.getWidth(),board.getHeight());
 
-                //Problem with calling the style???
+
                 scene.getStylesheets().add(getClass().getResource("style/application.css").toExternalForm());
 
                 stage.setScene(scene);
@@ -183,11 +183,13 @@ public class Main extends Application{
                 /*
                 Create the Board =======================================
                  */
-                board = new Board((int)boardHolder.getBoundsInParent().getWidth(),(int)boardHolder.getBoundsInParent().getHeight());
+                board = new Board(100,100);
+
+                // fill the board with cells
                 for(int row =0; row < board.getHeight();row++){
                     for(int col = 0; col < board.getWidth(); col++){
                         Cell cell = new Cell(col,row,Cell.TYPE.NORMAL);
-
+                        cell.getStyleClass().add("");
                         mousePaint.makePaintable(cell);
                         board.set(col,row,cell);
                     }

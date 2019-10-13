@@ -1,5 +1,6 @@
 package com;
 
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
 import java.util.Objects;
@@ -14,11 +15,15 @@ public class Cell extends StackPane {
     private int previousCost;
     private int predictedCost;
     private int selfCost;
+    Cell.TYPE cellType;
 
     public Cell(int x, int y, Cell.TYPE type) {
         this.x = x;
         this.y = y;
         setType(type);
+        updateTypeStyle();
+
+
     }
 
     public int getSelfCost() {
@@ -47,12 +52,29 @@ public class Cell extends StackPane {
         switch (type) {
             case NORMAL:
                 setSelfCost(1);
+                updateTypeStyle();
                 break;
             case BLOCKED:
                 // TODO: Implement blocked self cost. (Infinity?)
+                updateTypeStyle();
                 break;
             default:
                 setSelfCost(1);
+        }
+    }
+
+    private void updateTypeStyle(){
+        //remove existing type
+        getStyleClass().remove("block");
+        getStyleClass().remove("normal");
+
+        switch (cellType){
+            case NORMAL:
+                getStyleClass().add("normal");
+                break;
+            case BLOCKED:
+                getStyleClass().add("block");
+                break;
         }
     }
 
