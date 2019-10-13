@@ -48,7 +48,7 @@ public class Main extends Application{
         /*
         ====== SETTING THE BOARD ==============
          */
-        Board board = new Board(10,10);
+        Board board = new Board(500,500);
         AStar astar = new AStar(board);
 
 
@@ -169,7 +169,6 @@ public class Main extends Application{
                 //Generate Scence
                 Scene scene = new Scene(root,board.getWidth(),board.getHeight());
 
-
                 scene.getStylesheets().add(getClass().getResource("style/application.css").toExternalForm());
 
                 stage.setScene(scene);
@@ -201,7 +200,7 @@ public class Main extends Application{
                  */
 
                 start = new Cell(0,0,Cell.TYPE.NORMAL);
-                end = new Cell(5,5,Cell.TYPE.NORMAL);
+                end = new Cell(9,9,Cell.TYPE.NORMAL);
 
                 //apply style on the cell
                 start.getStyleClass().add("start");
@@ -275,7 +274,7 @@ public class Main extends Application{
          */
         private void paintWay(List<Cell> path){
             //remove all paint at first
-            removePaint();
+//            removePaint();
 
             //paint the way
             if(path!= null){

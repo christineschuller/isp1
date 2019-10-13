@@ -21,9 +21,7 @@ public class Cell extends StackPane {
         this.x = x;
         this.y = y;
         setType(type);
-        updateTypeStyle();
-
-
+        getStyleClass().add("normal");
     }
 
     public int getSelfCost() {
@@ -47,23 +45,27 @@ public class Cell extends StackPane {
     }
 
     public void setType(Cell.TYPE type) {
+        //remove existing type
+        getStyleClass().remove("block");
+        getStyleClass().remove("normal");
+
         this.type = type;
 
         switch (type) {
             case NORMAL:
                 setSelfCost(1);
-                updateTypeStyle();
+                getStyleClass().add("normal");
                 break;
             case BLOCKED:
                 // TODO: Implement blocked self cost. (Infinity?)
-                updateTypeStyle();
+                getStyleClass().add("block");
                 break;
             default:
                 setSelfCost(1);
         }
     }
 
-    private void updateTypeStyle(){
+    /*private void updateTypeStyle(){
         //remove existing type
         getStyleClass().remove("block");
         getStyleClass().remove("normal");
@@ -76,7 +78,7 @@ public class Cell extends StackPane {
                 getStyleClass().add("block");
                 break;
         }
-    }
+    }*/
 
     public int getPreviousCost() {
         return previousCost;
