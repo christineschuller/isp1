@@ -69,7 +69,7 @@ public class Board extends Pane {
 
         //set the size of one cell
         cell.setPrefWidth(cellSize);
-        cell.setPrefWidth(cellSize);
+        cell.setPrefHeight(cellSize);
 
         getChildren().add(cell);
 

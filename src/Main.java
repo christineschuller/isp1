@@ -154,9 +154,6 @@ public class Main extends Application{
                     /*
                 =========== CREATE BOARD ====================
                  */
-//                GridPane gridPane = new GridPane();
-//                boardHolder.getChildren().add(board);
-//                gridPane.setPadding(new Insets(10,10,10,10));
 
                 // fill the board with cells
                 for(int row =0; row < rows;row++){
@@ -164,13 +161,10 @@ public class Main extends Application{
                         Cell cell = new Cell(col,row,Cell.TYPE.NORMAL);
                         mousePaint.makePaintable(cell);
                         board.set(col,row,cell);
-                        //gridPane.add(cell,col,row);
                     }
                 }
                 board.getStyleClass().add("board");
                 root.setCenter(board);
-                //root.setCenter(gridPane);
-
 
                 /*
                 =========== GENERATE SCENE =======================
@@ -186,11 +180,11 @@ public class Main extends Application{
                 stage.show();
 
 
-
-
                 /*
                 EXAMPLE ==============================================
                  */
+                double posX = board.getWidth()/rows;
+                double posY = board.getHeight()/cols;
 
                 start = new Cell("Start",0,0,Cell.TYPE.NORMAL);
                 end = new Cell("End",4,4,Cell.TYPE.NORMAL);
