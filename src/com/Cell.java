@@ -15,13 +15,21 @@ public class Cell extends StackPane {
     private int previousCost;
     private int predictedCost;
     private int selfCost;
-    Cell.TYPE cellType;
+
+    private String name;
 
     public Cell(int x, int y, Cell.TYPE type) {
         this.x = x;
         this.y = y;
         setType(type);
-        getStyleClass().add("normal");
+       // getStyleClass().add("normal");
+    }
+    public Cell( String name, int x, int y, Cell.TYPE type){
+        this.x = x;
+        this.y = y;
+        this.name = name;
+        setType(type);
+
     }
 
     public int getSelfCost() {

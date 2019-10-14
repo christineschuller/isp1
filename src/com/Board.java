@@ -9,17 +9,20 @@ public class Board extends Pane {
     private final Cell[][] board;
     private int cellSize = 50;
 
+
     public Board(int width, int height) {
         this.width = width;
         this.height = height;
         this.board = new Cell[width][height];
 
 
-        for (int x = 0; x < width; x++) {
+        //generate later
+       /* for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 board[x][y] = new Cell(x, y, Cell.TYPE.NORMAL);
+
             }
-        }
+        }*/
     }
 
     public static void printBoard(Board board) {
@@ -54,24 +57,21 @@ public class Board extends Pane {
             System.out.println("THIS PLACE DOES NOT EXISTS");
         } else {
             board[x][y] = cell;
-
-            // count of cells in the board
-
-            double posX = cellSize*x;
-            double posY = cellSize*y;
-
-            //set the style of the cell
-
-            cell.setLayoutX(posX);
-            cell.setLayoutY(posY);
-
-            cell.setPrefWidth(cellSize);
-            cell.setPrefWidth(cellSize);
-
-            //cell.getStyleClass().add("cell");
-
-            getChildren().add(cell);
         }
+
+        // set the pos of cell in the board
+        double posX = cellSize*x;
+        double posY = cellSize*y;
+
+        //set the position of the cell
+        cell.setLayoutX(posX);
+        cell.setLayoutY(posY);
+
+        //set the size of one cell
+        cell.setPrefWidth(cellSize);
+        cell.setPrefWidth(cellSize);
+
+        getChildren().add(cell);
 
     }
 

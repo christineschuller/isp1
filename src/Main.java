@@ -19,10 +19,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
@@ -31,25 +28,13 @@ import static javafx.application.Application.launch;
 
 public class Main extends Application{
 
-    public class Settings {
-
-        // fullscreen or windowed mode
-        public boolean STAGE_FULLSCREEN = false;
-        public double STAGE_FULLSCREEN_SCALE = 1;
-
-        public double SCENE_WIDTH = 1280;
-        public double SCENE_HEIGHT = 720;
-
-        public  int GRID_ROWS = 9;
-        public  int GRID_COLUMNS = 18;
-
-        public boolean STEP_VIEW = false;
-    }
         /*
         ====== SETTING THE BOARD ==============
          */
         Board board = new Board(500,500);
         AStar astar = new AStar(board);
+        int cols = 10;
+        int rows = 10;
 
 
 
@@ -63,22 +48,22 @@ public class Main extends Application{
         MouseDragGestures mouseDrag;
 
         private boolean autoPath = true;
-        //private boolean showSteps = true;
 
         Cell start;
         Cell end;
 
         Label status;
-        //Slider slider;
+
 
         @Override
         public void start(Stage stage){
             try {
+
                 BorderPane root = new BorderPane();
 
-                //placeholder for the board
-                StackPane boardHolder = new StackPane();
-                root.setCenter(boardHolder);
+                /*
+                ============== TOOLBAR ===============================
+                 */
 
                 //Toolbar for the button and checkboxes
 
@@ -90,8 +75,8 @@ public class Main extends Application{
 
                 // remove block from the board
                 Button removeBlocksButton = new Button("Remove Blocks");
-
                 removeBlocksButton.setOnAction(event -> {
+                    //set all the cells in board to type normal
                     board.setType(Cell.TYPE.NORMAL);
                      if(autoPath){
                          showWay();
@@ -108,7 +93,7 @@ public class Main extends Application{
                     showWay();
                 });
 
-                //show-hide path
+                //show-hide path checkbox
                 CheckBox showPathCheckBox = new CheckBox("Show Way");
                 showPathCheckBox.selectedProperty().bindBidirectional(
                 showPathProperty);
@@ -140,7 +125,6 @@ public class Main extends Application{
                     }
                 });*/
 
-                //===============================
 
                 toolbar.setAlignment(Pos.CENTER);
 
@@ -149,6 +133,9 @@ public class Main extends Application{
 
                 root.setTop(toolbar);
 
+                /*
+                ================= STATUS BAR =========================
+                 */
                 //status
                 HBox statusBar = new HBox();
                 status = new Label();
@@ -164,9 +151,31 @@ public class Main extends Application{
 
                 root.setBottom(statusBar);
 
+                    /*
+                =========== CREATE BOARD ====================
+                 */
+//                GridPane gridPane = new GridPane();
+//                boardHolder.getChildren().add(board);
+//                gridPane.setPadding(new Insets(10,10,10,10));
+
+                // fill the board with cells
+                for(int row =0; row < rows;row++){
+                    for(int col = 0; col < cols; col++){
+                        Cell cell = new Cell(col,row,Cell.TYPE.NORMAL);
+                        mousePaint.makePaintable(cell);
+                        board.set(col,row,cell);
+                        //gridPane.add(cell,col,row);
+                    }
+                }
+                board.getStyleClass().add("board");
+                root.setCenter(board);
+                //root.setCenter(gridPane);
 
 
-                //Generate Scence
+                /*
+                =========== GENERATE SCENE =======================
+                 */
+
                 Scene scene = new Scene(root,board.getWidth(),board.getHeight());
 
                 scene.getStylesheets().add(getClass().getResource("style/application.css").toExternalForm());
@@ -176,31 +185,15 @@ public class Main extends Application{
 
                 stage.show();
 
-                //default setting
-                //stage.setFullScreen(true);
 
-                /*
-                Create the Board =======================================
-                 */
-                board = new Board(100,100);
 
-                // fill the board with cells
-                for(int row =0; row < board.getHeight();row++){
-                    for(int col = 0; col < board.getWidth(); col++){
-                        Cell cell = new Cell(col,row,Cell.TYPE.NORMAL);
-                        cell.getStyleClass().add("");
-                        mousePaint.makePaintable(cell);
-                        board.set(col,row,cell);
-                    }
-                }
-                root.setCenter(board);
 
                 /*
                 EXAMPLE ==============================================
                  */
 
-                start = new Cell(0,0,Cell.TYPE.NORMAL);
-                end = new Cell(9,9,Cell.TYPE.NORMAL);
+                start = new Cell("Start",0,0,Cell.TYPE.NORMAL);
+                end = new Cell("End",4,4,Cell.TYPE.NORMAL);
 
                 //apply style on the cell
                 start.getStyleClass().add("start");
@@ -212,6 +205,11 @@ public class Main extends Application{
                 mouseDrag = new MouseDragGestures(board);
                 mouseDrag.makeDragable(start);
                 mouseDrag.makeDragable(end);
+
+//                board.addOverlay(0,0,start);
+    //            board.addOverlay(4,4,end);
+
+                showWay();
 
                 // redraw the path after release the mouse
                 board.addEventFilter(MouseEvent.MOUSE_RELEASED,onMouseReleased);
@@ -267,7 +265,7 @@ public class Main extends Application{
 
             //paint the path
             paintWay(path);
-
+            astar.printPath(path);
         }
          /*
             Paint the way from the start to the target
@@ -299,6 +297,7 @@ public class Main extends Application{
 
 
         public static void main(String[] args) {
+
             launch(args);
 
             /*Board board = new Board(4, 4);
@@ -318,6 +317,8 @@ public class Main extends Application{
             AStar.printPath(path);*/
 //            AStar.printPath(path2);
 //            AStar.printPath(path3);
+
+
         }
     }
 
