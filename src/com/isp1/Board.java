@@ -19,7 +19,7 @@ public class Board {
         }
     }
 
-    public static void printBoard(Board board) {
+/*    public static void printBoard(Board board) {
         for (Cell[] row : board.getBoard()) {
             for (Cell cell : row) {
                 System.out.printf("| (%d,%d) g: %02d, h: %02d ",
@@ -27,7 +27,7 @@ public class Board {
             }
             System.out.println("|");
         }
-    }
+    }*/
 
     public int getWidth() {
         return width;

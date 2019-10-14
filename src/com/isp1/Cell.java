@@ -44,7 +44,7 @@ public class Cell {
                 setSelfCost(1);
                 break;
             case BLOCKED:
-                // TODO: Implement blocked self cost. (Infinity?)
+                setSelfCost(1000000000);
                 break;
             default:
                 setSelfCost(1);
