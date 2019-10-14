@@ -26,5 +26,6 @@ public class Main {
         AStar.printPath(path);
        // AStar.printPath(path2);
        // AStar.printPath(path3);
+
     }
 }
