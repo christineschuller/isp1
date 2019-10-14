@@ -10,6 +10,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,6 +24,8 @@ import javafx.scene.layout.*;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
+import javax.swing.text.html.ImageView;
+
 import static javafx.application.Application.launch;
 
 
@@ -31,10 +34,10 @@ public class Main extends Application{
         /*
         ====== SETTING THE BOARD ==============
          */
-        Board board = new Board(500,500);
+        Board board = new Board(10,10);
+        GridPane gridPane;
         AStar astar = new AStar(board);
-        int cols = 10;
-        int rows = 10;
+        int gridSize = 500;
 
 
 
@@ -154,17 +157,22 @@ public class Main extends Application{
                     /*
                 =========== CREATE BOARD ====================
                  */
+                    gridPane = new GridPane();
+                   gridPane.setPadding(new Insets(10));
+                  setColRows(gridPane,10,10);
 
                 // fill the board with cells
-                for(int row =0; row < rows;row++){
-                    for(int col = 0; col < cols; col++){
+                for(int row =0; row < gridPane.getRowCount();row++){
+                    for(int col = 0; col < gridPane.getColumnCount(); col++){
                         Cell cell = new Cell(col,row,Cell.TYPE.NORMAL);
                         mousePaint.makePaintable(cell);
                         board.set(col,row,cell);
+                        gridPane.add(cell,col,row,1,1);
                     }
                 }
-                board.getStyleClass().add("board");
-                root.setCenter(board);
+                gridPane.getStyleClass().add("board");
+                //root.setCenter(board);
+                root.setCenter(gridPane);
 
                 /*
                 =========== GENERATE SCENE =======================
@@ -183,17 +191,22 @@ public class Main extends Application{
                 /*
                 EXAMPLE ==============================================
                  */
-                double posX = board.getWidth()/rows;
-                double posY = board.getHeight()/cols;
-
-                start = new Cell("Start",0,0,Cell.TYPE.NORMAL);
-                end = new Cell("End",4,4,Cell.TYPE.NORMAL);
+                start = new Cell(1,1,Cell.TYPE.NORMAL);
+                end = new Cell(4,4,Cell.TYPE.NORMAL);
 
                 //apply style on the cell
                 start.getStyleClass().add("start");
+                start.toFront();
                 end.getStyleClass().add("end");
 
-                start.toFront();
+
+                gridPane.getChildren().remove(1,1);
+                gridPane.getChildren().remove(4,4);
+                gridPane.getChildren().add(start);
+
+                gridPane.add(end,4,4);
+
+
                 end.toFront();
 
                 mouseDrag = new MouseDragGestures(board);
@@ -217,6 +230,37 @@ public class Main extends Application{
         }
 
         /*
+        replace the node in the Gridpanne
+         *//*
+        public Cell removeNodeByRowColumnIndex(final int row,final int column,GridPane gridPane) {
+
+            for(Cell node : gridPane.getChildren()) {
+                if( gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
+                     // use what you want to remove
+                    gridPane.getChildren().remove(node);
+                    break;
+                }
+            }
+        }*/
+
+        /*
+        Set up the cols and rows for Gridpane
+         */
+        GridPane setColRows(GridPane gridPane,int numCols,int numRows){
+            for (int i = 0; i < numCols; i++) {
+                ColumnConstraints colConst = new ColumnConstraints();
+                colConst.setPercentWidth(gridSize / numCols);
+                gridPane.getColumnConstraints().add(colConst);
+            }
+            for (int i = 0; i < numRows; i++) {
+                RowConstraints rowConst = new RowConstraints();
+                rowConst.setPercentHeight(gridSize / numRows);
+                gridPane.getRowConstraints().add(rowConst);
+            }
+            return gridPane;
+        }
+
+        /*
         Set up default to show the path
          */
         EventHandler<MouseEvent> onMouseReleased = event -> {
@@ -224,6 +268,7 @@ public class Main extends Application{
               showWay();
           }
         };
+
         /*
         Search for the path and show if requested
          */

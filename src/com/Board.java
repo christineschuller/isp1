@@ -7,7 +7,7 @@ public class Board extends Pane {
     private final int width;
     private final int height;
     private final Cell[][] board;
-    private int cellSize = 50;
+    private int cellSize = 1;
 
 
     public Board(int width, int height) {
@@ -59,7 +59,7 @@ public class Board extends Pane {
             board[x][y] = cell;
         }
 
-        // set the pos of cell in the board
+        /*// set the pos of cell in the board
         double posX = cellSize*x;
         double posY = cellSize*y;
 
@@ -68,10 +68,10 @@ public class Board extends Pane {
         cell.setLayoutY(posY);
 
         //set the size of one cell
-        cell.setPrefWidth(cellSize);
-        cell.setPrefHeight(cellSize);
+        //cell.setPrefWidth(cellSize);
+        //cell.setPrefHeight(cellSize);
 
-        getChildren().add(cell);
+        getChildren().add(cell);*/
 
     }
 
