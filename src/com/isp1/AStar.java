@@ -16,7 +16,19 @@ public class AStar {
 
     public AStar(Board board) {
         this.board = board;
-        this.heuristic = new Manhattan();
+        //this.heuristic = new Manhattan();
+        //this.heuristic = new Euclidian();
+        this.heuristic = new DiagonalHeuristic();
+    }
+
+    public static void printPath(List<Cell> path) {
+        System.out.print("Path: ");
+        for (int i = 0; i < path.size(); i++) {
+            Cell c = path.get(i);
+            System.out.print("(" + c.getX() + "," + c.getY() + ")");
+            if (i < path.size() - 1) System.out.print(" => ");
+        }
+        System.out.println();
     }
 
     public void setStart(Cell start) {
@@ -56,6 +68,29 @@ public class AStar {
 
     private boolean neighbourSanityCheck(List<Cell> path, Cell neighbour) {
         return neighbour != null && !path.contains(neighbour) && neighbour.getType() != Cell.TYPE.BLOCKED;
+    }
+
+    private List<Cell> getNeighbourHood(Cell cell) {
+        List<Cell> neighborhood = new ArrayList<>();
+
+        // on the top
+        Cell top = board.get(cell.getX(), cell.getY() + 1);
+
+        // on the right
+        Cell right = board.get(cell.getX() + 1, cell.getY());
+
+        // on the left
+        Cell left = board.get(cell.getX() - 1, cell.getY());
+
+        //at the bottom
+        Cell bottom = board.get(cell.getX(), cell.getY() - 1);
+
+        neighborhood.add(top);
+        neighborhood.add(left);
+        neighborhood.add(right);
+        neighborhood.add(bottom);
+
+        return neighborhood;
     }
 
     public List<Cell> getPath() {
@@ -100,9 +135,32 @@ public class AStar {
                 continue;
             }
 
-            neighbours.sort(Comparator.comparingInt(Cell::getTotalCost));
+            //Diagonal neighbours - to be commented when Manhattan Heuristic is used
+            neighbour = board.get(current.getX() + 1, current.getY() + 1);
+            if (neighbourSanityCheck(path, neighbour)) {
+                neighbours.add(neighbour);
+                updatePreviousCost(path, neighbour);
+            }
 
-            if (neighbours.size() > 0) {
+            neighbour = board.get(current.getX() + 1, current.getY() - 1);
+            if (neighbourSanityCheck(path, neighbour)) {
+                neighbours.add(neighbour);
+                updatePreviousCost(path, neighbour);
+            }
+
+            neighbour = board.get(current.getX() - 1, current.getY() - 1);
+            if (neighbourSanityCheck(path, neighbour)) {
+                neighbours.add(neighbour);
+                updatePreviousCost(path, neighbour);
+            }
+
+            neighbour = board.get(current.getX() - 1, current.getY() + 1);
+            if (neighbourSanityCheck(path, neighbour)) {
+                neighbours.add(neighbour);
+                updatePreviousCost(path, neighbour);
+            }
+
+     /*       if (neighbours.size() > 0) {
                 Cell bestNeighbour = neighbours.get(0);
                 int bestCost = bestNeighbour.getTotalCost();
                 List<Cell> bestCostOptions = neighbours.stream().filter(e -> e.getTotalCost() == bestCost).collect(Collectors.toList());
@@ -111,20 +169,51 @@ public class AStar {
                 path.add(current);
             } else {
                 problem = true;
-            }
-        }
-        // TODO: Make a step backwards if the cell has no options ( return to parent cell and choose the next best option ). Create a new Type NOFURTHERWAY ( es gibt ein Unterschied zwischen Blocked und Nofurtherway )
-        return path;
-    }
+            }*/
+            // check if the neighbour is type DEADEND
 
-    public static void printPath(List<Cell> path) {
-        System.out.print("Path: ");
-        for (int i = 0; i < path.size(); i++) {
-            Cell c = path.get(i);
-            System.out.print("(" + c.getX() + "," + c.getY() + ")");
-            if (i < path.size() - 1) System.out.print(" => ");
+            int blockEnd = 0;
+            Cell notThisCell = current;
+
+            for (Cell thisCell : neighbours) {
+
+                for (Cell cell : getNeighbourHood(thisCell)) {
+                    // System.out.println(cell);
+
+                    if (cell != null && cell.getType() == Cell.TYPE.BLOCKED) {
+                        blockEnd++;
+                        continue;
+                    }
+                    if (blockEnd == 3) {
+                        notThisCell = thisCell;
+                        // System.out.println("No way to the target");
+
+                    }
+                }
+            }
+
+            neighbours.sort(Comparator.comparingInt(Cell::getTotalCost));
+            if (neighbours.size() > 0) {
+
+                Cell bestNeighbour = neighbours.get(0);
+                int bestCost = bestNeighbour.getTotalCost();
+                List<Cell> bestCostOptions = neighbours.stream().filter(e -> e.getTotalCost() == bestCost).collect(Collectors.toList());
+                Random rand = new Random();
+                current = bestCostOptions.get(rand.nextInt(bestCostOptions.size()));
+
+                // if this current cell is not suitable to choose, so choose another one
+                if (current == notThisCell) {
+                    current = bestCostOptions.get(rand.nextInt(bestCostOptions.size()));
+                }
+
+                path.add(current);
+            } else {
+                problem = true;
+            }
+
         }
-        System.out.println();
+        if(current!=target) System.out.println("Path couldn't be found");
+        return path;
     }
 }
 
