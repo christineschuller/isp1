@@ -30,26 +30,21 @@ public class Main extends Application{
         ====== SETTING THE BOARD ==============
          */
         //The board have 10 columns and 10 rows
-        Board board = new Board(5,5);
+        Board board = new Board(8,8);
         AStar astar = new AStar(board);
         //set start and end
         Cell start = new Cell(0,0);
-        Cell end = new Cell(3,3);
-
+        Cell end = new Cell(board.getCols()-1,board.getRows()-1);
 
          /*
            ====== CONSTANTS ==============
             */
-
         BooleanProperty showPathProperty = new SimpleBooleanProperty( true);
-
-        MousePaintGestures mousePaint = new MousePaintGestures();
         MouseDragGestures mouseDrag;
 
         private boolean autoPath = true;
 
         Label status;
-
 
         @Override
         public void start(Stage stage){
@@ -73,7 +68,6 @@ public class Main extends Application{
                 removeBlocksButton.setOnAction(event -> {
                     //set all the cells in board to type normal
                     board.setType(Cell.TYPE.NORMAL);
-
                     board.getCell(start.getX(),start.getY()).setType(Cell.TYPE.START);
                     board.getCell(end.getX(),end.getY()).setType(Cell.TYPE.END);
                      if(autoPath){
@@ -87,14 +81,14 @@ public class Main extends Application{
                     showWay();
                 });
 
-                //show-hide path checkbox
+    /*            //show-hide path checkbox
                 CheckBox showPathCheckBox = new CheckBox("Show Way");
                 showPathCheckBox.selectedProperty().bindBidirectional(
                 showPathProperty);
                 showPathProperty.addListener((ChangeListener<Boolean>) ((observable, oldValue, newValue) -> {
                             repaintWay();
                     }
-                    ));
+                    ));*/
 
                 //Allow diagonals
                 //TODO
@@ -103,7 +97,7 @@ public class Main extends Application{
                 toolbar.setAlignment(Pos.CENTER);
 
                 // Set the element in the toolbar
-                toolbar.getChildren().addAll(removeBlocksButton,findPathButton,showPathCheckBox);
+                toolbar.getChildren().addAll(removeBlocksButton,findPathButton);
 
                 root.setTop(toolbar);
 
@@ -132,8 +126,6 @@ public class Main extends Application{
                 // fill the board with cells
                 for(int row = 0; row < board.getRows(); row++){
                     for(int col = 0; col < board.getCols(); col++){
-                        Cell cell = new Cell(col,row,Cell.TYPE.NORMAL);
-                        //board.set(col,row,cell);
                         board.getCell(col,row).setType(Cell.TYPE.NORMAL);
                         makePaintable(col,row);
                     }
@@ -145,7 +137,6 @@ public class Main extends Application{
                 board.getCell(end.getX(),end.getY()).setType(Cell.TYPE.END);
 
                 board.getStyleClass().add("board");
-                //root.setCenter(board);
                 root.setCenter(board);
 
 
@@ -155,8 +146,8 @@ public class Main extends Application{
 
 
 //
-//                start.toFront();
-//                end.toFront();
+              start.toFront();
+              end.toFront();
 
                 mouseDrag = new MouseDragGestures(board);
                 mouseDrag.makeDragable(start);
@@ -168,16 +159,15 @@ public class Main extends Application{
 
 
                 // redraw the path after release the mouse
-//                board.addEventFilter(MouseEvent.MOUSE_RELEASED,onMouseReleased);
-//                start.addEventFilter(MouseEvent.MOUSE_RELEASED,onMouseReleased);
-//                end.addEventFilter(MouseEvent.MOUSE_RELEASED,onMouseReleased);
+                board.addEventFilter(MouseEvent.MOUSE_RELEASED,onMouseReleased);
+                start.addEventFilter(MouseEvent.MOUSE_RELEASED,onMouseReleased);
+                end.addEventFilter(MouseEvent.MOUSE_RELEASED,onMouseReleased);
 
                 /*
                 =========== GENERATE SCENE =======================
                  */
 
-                Scene scene = new Scene(root,board.getWidth(),board.getHeight());
-
+                Scene scene = new Scene(root,600,600);
                 scene.getStylesheets().add(getClass().getResource("style/application.css").toExternalForm());
 
                 stage.setScene(scene);
@@ -185,13 +175,10 @@ public class Main extends Application{
 
                 stage.show();
 
-
-
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
-
 
 
     /**
@@ -203,6 +190,12 @@ public class Main extends Application{
         board.get(1, 1).setType(Cell.TYPE.BLOCKED);
         board.get(2, 1).setType(Cell.TYPE.BLOCKED);
         board.get(3, 1).setType(Cell.TYPE.BLOCKED);
+        //board.get(2,0).setType(Cell.TYPE.BLOCKED);
+        board.get(2, 3).setType(Cell.TYPE.BLOCKED);
+        board.get(2, 4).setType(Cell.TYPE.BLOCKED);
+        board.get(2, 5).setType(Cell.TYPE.BLOCKED);
+        board.get(2, 6).setType(Cell.TYPE.BLOCKED);
+        board.get(5,6).setType(Cell.TYPE.BLOCKED);
 
 /*
         for (int row = 0; row < board.rows; row++) {
@@ -227,14 +220,14 @@ public class Main extends Application{
         }
 */
     }
-//        /*
-//        Set up default to show the path
-//         */
-//        EventHandler<MouseEvent> onMouseReleased = event -> {
-//          if(autoPath){
-//              showWay();
-//          }
-//        };
+        /*
+        Set up default to show the path
+         */
+        EventHandler<MouseEvent> onMouseReleased = event -> {
+          if(autoPath){
+              showWay();
+          }
+        };
 
         /*
         Search for the path and show if requested
@@ -244,22 +237,27 @@ public class Main extends Application{
 
         }
 
-        public void repaintWay(){
-            paintWay(astar.getPath());
-        }
+       /* public void repaintWay(){
+            List<Cell> path = astar.getPath();
+            for(Cell cell : path){
+                cell.getStyleClass().clear();
+                cell.setType(Cell.TYPE.NORMAL);
+            }
+            paintWay(path);
+        }*/
 
     /**
      * Remove Paint
      */
         public void removePaint() {
-            for (int row = 0; row < board.getHeight(); row++) {
-                for (int col = 0; col < board.getWidth(); col++) {
-                    board.getCell(row,col).setType(Cell.TYPE.NORMAL);
+            for (int row = 0; row < board.getRows(); row++) {
+                for (int col = 0; col < board.getCols(); col++) {
+                    board.getCell(row,col).getStyleClass().remove("path");
                 }
             }
         }
         /*
-
+        find the way by implement the A*Algo
          */
         private void findWay(Cell start, Cell target){
             // generate a Path through the A* Algo
@@ -303,7 +301,6 @@ public class Main extends Application{
             board.getCell(end.getX(),end.getY()).setType(Cell.TYPE.END);
         }
 
-
     private void setType(MouseEvent event){
         Cell.TYPE type = null;
 
@@ -318,9 +315,8 @@ public class Main extends Application{
         Cell cell = (Cell) event.getSource();
         cell.setType(type);
 
-        //remove highlight?? write later if necessary
-
     }
+
     /*
     ========== MOUSE PAINT GESTURE =====================================
      */
@@ -351,7 +347,6 @@ public class Main extends Application{
     /*
     ========== MAIN =====================================
      */
-
 
         public static void main(String[] args) {
             launch(args);

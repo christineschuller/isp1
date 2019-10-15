@@ -41,9 +41,9 @@ public class AStar {
     }
 
     private void setPredictedCosts() { // calculating and setting the predicted cost of each cell
-        for (int i = 0; i < board.getWidth(); i++) {
-            for (int j = 0; j < board.getHeight(); j++) {
-                board.get(i, j).setPredictedCost(heuristic.getCost(board.get(i, j), target));
+        for (int i = 0; i < board.getCols(); i++) {
+            for (int j = 0; j < board.getRows(); j++) {
+                board.getCell(i, j).setPredictedCost(heuristic.getCost(board.get(i, j), target));
             }
         }
     }

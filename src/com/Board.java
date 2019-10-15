@@ -43,7 +43,9 @@ public class Board extends GridPane {
      * @return Referenz auf die Zelle oder 'null' bei ungültigem Index. */
 
     public Cell getCell(int x, int y) {
-        if (x < 0 || y < 0 || x >= board.length || y >= board[0].length) throw new NoSuchElementException();
+        if (x < 0 || y < 0 || x >= board.length || y >= board[0].length){
+            //doing nothing
+        };
         return board[x][y];
     }
 
