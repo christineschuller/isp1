@@ -1,5 +1,6 @@
 package input;
 
+import com.Board;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -7,6 +8,7 @@ import com.Cell;
 
 
 public class MousePaintGestures {
+    private Board board;
     EventHandler<MouseEvent> onMousePressedEvent = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent event) {
@@ -43,10 +45,10 @@ public class MousePaintGestures {
         setType(event);
     };
 
-    public void makePaintable(Node node){
-        node.setOnMousePressed(onMousePressedEvent);
-        node.setOnDragDetected(onDragDetected);
-        node.setOnDragDetected(onMouseEntered);
+    public void makePaintable(int col, int row ){
+        board.getCell(col, row).setOnMousePressed(onMousePressedEvent);
+        board.getCell(col, row).setOnDragDetected(onDragDetected);
+        board.getCell(col, row).setOnDragDetected(onMouseEntered);
     }
 
 

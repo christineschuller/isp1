@@ -9,22 +9,17 @@ import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
-
-import javax.swing.text.html.ImageView;
 
 import static javafx.application.Application.launch;
 
@@ -34,26 +29,24 @@ public class Main extends Application{
         /*
         ====== SETTING THE BOARD ==============
          */
-        Board board = new Board(10,10);
-        GridPane gridPane;
+        //The board have 10 columns and 10 rows
+        Board board = new Board(8,8);
         AStar astar = new AStar(board);
-        int gridSize = 500;
-
+        //set start and end
+        Cell start = new Cell(0,0);
+        Cell end = new Cell(board.getCols()-3,board.getRows()-3);
 
 
          /*
            ====== CONSTANTS ==============
             */
-       // BooleanProperty stepViewProperty = new SimpleBooleanProperty( false);
+
         BooleanProperty showPathProperty = new SimpleBooleanProperty( true);
 
         MousePaintGestures mousePaint = new MousePaintGestures();
         MouseDragGestures mouseDrag;
 
         private boolean autoPath = true;
-
-        Cell start;
-        Cell end;
 
         Label status;
 
@@ -75,20 +68,18 @@ public class Main extends Application{
                 toolbar.setPadding(new Insets(10,10,10,10));
                 toolbar.setSpacing(5);
 
-
                 // remove block from the board
                 Button removeBlocksButton = new Button("Remove Blocks");
                 removeBlocksButton.setOnAction(event -> {
                     //set all the cells in board to type normal
                     board.setType(Cell.TYPE.NORMAL);
+
+                    board.getCell(start.getX(),start.getY()).setType(Cell.TYPE.START);
+                    board.getCell(end.getX(),end.getY()).setType(Cell.TYPE.END);
                      if(autoPath){
                          showWay();
                      }
                 });
-
-                // generate block
-                //TODO
-                //
 
                 //find Path Button
                 Button findPathButton = new Button("Find Way");
@@ -101,33 +92,13 @@ public class Main extends Application{
                 showPathCheckBox.selectedProperty().bindBidirectional(
                 showPathProperty);
                 showPathProperty.addListener((ChangeListener<Boolean>) ((observable, oldValue, newValue) -> {
-                            showWay();
+                            repaintWay();
                     }
                     ));
 
                 //Allow diagonals
                 //TODO
                 //
-
- /*               //steps need info label
-                Label stepLabel = new Label();
-
-                slider = new Slider();
-                slider.setMin(0);
-                slider.setMax(0);
-                slider.setValue(0);
-                slider.setShowTickLabels(true);
-                slider.setShowTickMarks(true);
-                slider.setBlockIncrement(1);
-                slider.setPrefWidth(300);
-                slider.valueProperty().addListener(new ChangeListener<Number>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                        stepLabel.setText("test" + newValue.intValue());
-                        showWay();
-                    }
-                });*/
-
 
                 toolbar.setAlignment(Pos.CENTER);
 
@@ -157,22 +128,49 @@ public class Main extends Application{
                     /*
                 =========== CREATE BOARD ====================
                  */
-                    gridPane = new GridPane();
-                   gridPane.setPadding(new Insets(10));
-                  setColRows(gridPane,10,10);
 
                 // fill the board with cells
-                for(int row =0; row < gridPane.getRowCount();row++){
-                    for(int col = 0; col < gridPane.getColumnCount(); col++){
+                for(int row = 0; row < board.getRows(); row++){
+                    for(int col = 0; col < board.getCols(); col++){
                         Cell cell = new Cell(col,row,Cell.TYPE.NORMAL);
-                        mousePaint.makePaintable(cell);
-                        board.set(col,row,cell);
-                        gridPane.add(cell,col,row,1,1);
+                        //board.set(col,row,cell);
+                        board.getCell(col,row).setType(Cell.TYPE.NORMAL);
+                        makePaintable(col,row);
                     }
                 }
-                gridPane.getStyleClass().add("board");
+
+
+                // set the start/ end cell
+                board.getCell(start.getX(),start.getY()).setType(Cell.TYPE.START);
+                board.getCell(end.getX(),end.getY()).setType(Cell.TYPE.END);
+
+                board.getStyleClass().add("board");
                 //root.setCenter(board);
-                root.setCenter(gridPane);
+                root.setCenter(board);
+
+
+                /*
+                EXAMPLE ==============================================
+                 */
+
+
+//
+//                start.toFront();
+//                end.toFront();
+
+                mouseDrag = new MouseDragGestures(board);
+                mouseDrag.makeDragable(start);
+                mouseDrag.makeDragable(end);
+
+
+                createBlock();
+                showWay();
+
+
+                // redraw the path after release the mouse
+//                board.addEventFilter(MouseEvent.MOUSE_RELEASED,onMouseReleased);
+//                start.addEventFilter(MouseEvent.MOUSE_RELEASED,onMouseReleased);
+//                end.addEventFilter(MouseEvent.MOUSE_RELEASED,onMouseReleased);
 
                 /*
                 =========== GENERATE SCENE =======================
@@ -188,92 +186,64 @@ public class Main extends Application{
                 stage.show();
 
 
-                /*
-                EXAMPLE ==============================================
-                 */
-                start = new Cell(1,1,Cell.TYPE.NORMAL);
-                end = new Cell(4,4,Cell.TYPE.NORMAL);
-
-                //apply style on the cell
-                start.getStyleClass().add("start");
-                start.toFront();
-                end.getStyleClass().add("end");
-
-
-                gridPane.getChildren().remove(1,1);
-                gridPane.getChildren().remove(4,4);
-                gridPane.getChildren().add(start);
-
-                gridPane.add(end,4,4);
-
-
-                end.toFront();
-
-                mouseDrag = new MouseDragGestures(board);
-                mouseDrag.makeDragable(start);
-                mouseDrag.makeDragable(end);
-
-//                board.addOverlay(0,0,start);
-    //            board.addOverlay(4,4,end);
-
-                showWay();
-
-                // redraw the path after release the mouse
-                board.addEventFilter(MouseEvent.MOUSE_RELEASED,onMouseReleased);
-                start.addEventFilter(MouseEvent.MOUSE_RELEASED,onMouseReleased);
-                end.addEventFilter(MouseEvent.MOUSE_RELEASED,onMouseReleased);
-
 
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
 
-        /*
-        replace the node in the Gridpanne
-         *//*
-        public Cell removeNodeByRowColumnIndex(final int row,final int column,GridPane gridPane) {
 
-            for(Cell node : gridPane.getChildren()) {
-                if( gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
-                     // use what you want to remove
-                    gridPane.getChildren().remove(node);
-                    break;
-                }
-            }
-        }*/
 
-        /*
-        Set up the cols and rows for Gridpane
-         */
-        GridPane setColRows(GridPane gridPane,int numCols,int numRows){
-            for (int i = 0; i < numCols; i++) {
-                ColumnConstraints colConst = new ColumnConstraints();
-                colConst.setPercentWidth(gridSize / numCols);
-                gridPane.getColumnConstraints().add(colConst);
-            }
-            for (int i = 0; i < numRows; i++) {
-                RowConstraints rowConst = new RowConstraints();
-                rowConst.setPercentHeight(gridSize / numRows);
-                gridPane.getRowConstraints().add(rowConst);
-            }
-            return gridPane;
-        }
+    /**
+     * Fill the grid with arbitrary obstacles
+     */
+    private void createBlock() {
 
-        /*
-        Set up default to show the path
-         */
-        EventHandler<MouseEvent> onMouseReleased = event -> {
-          if(autoPath){
-              showWay();
-          }
-        };
+        board.get(0, 1).setType(Cell.TYPE.BLOCKED);
+        board.get(1, 1).setType(Cell.TYPE.BLOCKED);
+        board.get(2, 1).setType(Cell.TYPE.BLOCKED);
+        board.get(3, 1).setType(Cell.TYPE.BLOCKED);
+
+//        for (int row = 0; row < board.rows; row++) {
+//                for (int column = 0; column < board.cols; column++) {
+//
+//                    if (row == 1 && column > 6)
+//                        board.getCell(column, row).setType(Cell.TYPE.BLOCKED);
+//
+//                    if (row == 6 && column > 5)
+//                        board.getCell(column, row).setType(Cell.TYPE.BLOCKED);
+//
+//                    if (row > 1 && row < 6 && column == 7)
+//                        board.getCell(column, row).setType(Cell.TYPE.BLOCKED);
+//
+//                    if (row >= 0 && row < 7 && column == 2)
+//                        board.getCell(column, row).setType(Cell.TYPE.BLOCKED);
+//
+//                    if (row >= 4 && row <= 7 && column == 5)
+//                        board.getCell(column, row).setType(Cell.TYPE.BLOCKED);
+//
+//                }
+//        }
+    }
+//        /*
+//        Set up default to show the path
+//         */
+//        EventHandler<MouseEvent> onMouseReleased = event -> {
+//          if(autoPath){
+//              showWay();
+//          }
+//        };
 
         /*
         Search for the path and show if requested
          */
         public void showWay(){
-            findWay(board.get(start.getX(),start.getY()),board.get(end.getX(),end.getY()));
+            findWay(board.getCell(start.getX(),start.getY()),board.getCell(end.getX(),end.getY()));
+
+        }
+
+        public void repaintWay(){
+            paintWay(astar.getPath());
         }
 
     /**
@@ -282,7 +252,7 @@ public class Main extends Application{
         public void removePaint() {
             for (int row = 0; row < board.getHeight(); row++) {
                 for (int col = 0; col < board.getWidth(); col++) {
-                    board.get(row,col).getStyleClass().remove("path");
+                    board.getCell(row,col).setType(Cell.TYPE.NORMAL);
                 }
             }
         }
@@ -294,69 +264,96 @@ public class Main extends Application{
             astar.setStart(start);
             astar.setTarget(target);
             List<Cell> path = astar.getPath();
+
             String context;
             if(path!= null){
-                context = "Cell in Path: "+ path.size();
+                context = "Cells in Path: "+ path.size();
             }else{
                 context = "No Path to be found";
             }
             status.setText(context);
 
             //paint the path
+
             paintWay(path);
+
             astar.printPath(path);
         }
+
          /*
             Paint the way from the start to the target
          */
         private void paintWay(List<Cell> path){
             //remove all paint at first
-//            removePaint();
+            removePaint();
 
             //paint the way
             if(path!= null){
                 //paint the way
                 for(Cell cell : path){
-                    cell.getStyleClass().add("path");
+                   // cell.getStyleClass().clear();
+                    cell.setType(Cell.TYPE.PATH);
                 }
             }else{
                 System.out.println("NO WAY IS TO BE FOUND !");
             }
+            board.getCell(start.getX(),start.getX()).setType(Cell.TYPE.START);
+            board.getCell(end.getX(),end.getY()).setType(Cell.TYPE.END);
         }
 
 
+    private void setType(MouseEvent event){
+        Cell.TYPE type = null;
 
+        if(event.isPrimaryButtonDown()){
+            type = Cell.TYPE.BLOCKED;
+        }else if(event.isSecondaryButtonDown()){
+            type = Cell.TYPE.NORMAL;
+        }else{
+            //skip if nothing happens
+            return;
+        }
+        Cell cell = (Cell) event.getSource();
+        cell.setType(type);
 
+        //remove highlight?? write later if necessary
 
+    }
+    /*
+    ========== MOUSE PAINT GESTURE =====================================
+     */
+    // when click on the cell
+    EventHandler<MouseEvent> onMousePressedEvent = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+            setType(event);
+        }
+    };
 
+    EventHandler<MouseEvent> onDragDetected = event -> {
+        // start press-grag-release gesture
+        Cell cell = (Cell) event.getSource();
+        cell.startFullDrag();
+    };
 
+    EventHandler<MouseEvent> onMouseEntered = event -> {
+        //keep the paint when drag the mouse
+        setType(event);
+    };
 
-
+    public void makePaintable(int col, int row){
+        board.getCell(col,row).setOnMousePressed(onMousePressedEvent);
+        board.getCell(col,row).setOnDragDetected(onDragDetected);
+        board.getCell(col,row).setOnDragDetected(onMouseEntered);
+    }
+    /*
+    ========== MAIN =====================================
+     */
 
 
 
         public static void main(String[] args) {
-
             launch(args);
-
-            /*Board board = new Board(4, 4);
-            AStar astar = new AStar(board);
-
-            board.get(0, 1).setType(Cell.TYPE.BLOCKED);
-            board.get(2, 1).setType(Cell.TYPE.BLOCKED);
-            board.get(1, 2).setType(Cell.TYPE.BLOCKED);
-
-            astar.setStart(0, 0);
-            astar.setTarget(3, 3);
-
-            List<Cell> path = astar.getPath();
-            List<Cell> path2 = astar.getPath();
-            List<Cell> path3 = astar.getPath();
-
-            AStar.printPath(path);*/
-//            AStar.printPath(path2);
-//            AStar.printPath(path3);
-
 
         }
     }

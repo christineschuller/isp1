@@ -1,6 +1,8 @@
 package com;
 
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 
 import java.util.Objects;
@@ -8,7 +10,7 @@ import java.util.Objects;
 /** Store the value previousCost(the distance from the started cell to this cell), predictedCost(heuristic value?) and selfCost
  *
  */
-public class Cell extends StackPane {
+public class Cell extends BorderPane {
      int x;
      int y;
     private Enum type;
@@ -18,11 +20,17 @@ public class Cell extends StackPane {
 
     private String name;
 
+    public Cell(int x, int y) {
+        this.x = x;
+        this.y = y;
+
+    }
+
     public Cell(int x, int y, Cell.TYPE type) {
         this.x = x;
         this.y = y;
         setType(type);
-       // getStyleClass().add("normal");
+
     }
     public Cell( String name, int x, int y, Cell.TYPE type){
         this.x = x;
@@ -53,40 +61,37 @@ public class Cell extends StackPane {
     }
 
     public void setType(Cell.TYPE type) {
+
+        setTop(new Label("(" + x + ", " + y + ")"));
+        setCenter(new Label(type.name().toLowerCase()));
+
         //remove existing type
-        getStyleClass().remove("block");
-        getStyleClass().remove("normal");
+        getStyleClass().clear();
+        getStyleClass().add("cell");
 
         this.type = type;
 
         switch (type) {
-            case NORMAL:
+            case START:
                 setSelfCost(1);
-                getStyleClass().add("normal");
+                getStyleClass().add("start");
                 break;
             case BLOCKED:
                 // TODO: Implement blocked self cost. (Infinity?)
                 getStyleClass().add("block");
                 break;
+            case END:
+                setSelfCost(1);
+                getStyleClass().add("end");
+                break;
+            case PATH:
+                getStyleClass().add("path");
+                break;
             default:
                 setSelfCost(1);
+                getStyleClass().add("normal");
         }
     }
-
-    /*private void updateTypeStyle(){
-        //remove existing type
-        getStyleClass().remove("block");
-        getStyleClass().remove("normal");
-
-        switch (cellType){
-            case NORMAL:
-                getStyleClass().add("normal");
-                break;
-            case BLOCKED:
-                getStyleClass().add("block");
-                break;
-        }
-    }*/
 
     public int getPreviousCost() {
         return previousCost;
@@ -133,13 +138,10 @@ public class Cell extends StackPane {
 
 
     public enum TYPE {
-        NORMAL, BLOCKED, DEADEND
+        NORMAL, BLOCKED, DEADEND,START,END,PATH;
     }
 
 
-    public void highlight() {
-        getStyleClass().add("path");
-    }
 
 
 }

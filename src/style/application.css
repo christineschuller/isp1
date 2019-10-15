@@ -1,17 +1,19 @@
 .start {
     -fx-border-color: #90b4ff;
     -fx-border-width: 3px;
-    -fx-background-color:derive(#90b4ff,0.9);
+    -fx-background-color:derive(#90b4ff,90%);
 }
 .end {
     -fx-border-color: #ff8423;
     -fx-border-width: 3px;
-    -fx-background-color:derive(#ff8423,0.9);
+    -fx-background-color:derive(#ff8423,90%);
 }
 .cell{
-    -fx-border-color: #ff8423;
-    -fx-border-width: 3px;
-    -fx-background-color:derive(darkgray,0.9);
+    -fx-background-color: #FEFEFE;
+    -fx-border-color: "darkgrey";
+    -fx-font-size: 8pt;
+    -fx-pref-width: 60px;
+    -fx-pref-height: 60px;
 }
 .grid {
     -fx-border-color: #ff8423;
@@ -28,7 +30,7 @@
 }*/
 /* important order: path must be after open and closed because a cell can be both. the last in the css overlaps the previous styles, no matter how you add them to the styleclass list */
 .path {
-    -fx-background-color:derive(lightgreen,0.9);
+    -fx-background-color:derive(#247c3e,0.9);
 }
 /* important order: traversable must be after path because a cell can be both. the last in the css overlaps the previous styles, no matter how you add them to the styleclass list. traversable overrides path when you paint over a path */
 .normal {

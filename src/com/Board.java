@@ -1,29 +1,32 @@
 package com;
 
 import javafx.geometry.Point2D;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
-public class Board extends Pane {
-    private final int width;
-    private final int height;
+import java.util.NoSuchElementException;
+
+public class Board extends GridPane {
+    public final int cols;
+    public final int rows;
     private final Cell[][] board;
-    private int cellSize = 1;
 
-
-    public Board(int width, int height) {
-        this.width = width;
-        this.height = height;
-        this.board = new Cell[width][height];
-
+    public Board(int cols, int rows) {
+        this.cols = cols;
+        this.rows = rows;
+        this.board = new Cell[cols][rows];
 
         //generate later
-       /* for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
+        for (int x = 0; x < cols; x++) {
+            for (int y = 0; y < rows; y++) {
                 board[x][y] = new Cell(x, y, Cell.TYPE.NORMAL);
-
+                this.add(board[x][y],x,y);
             }
-        }*/
+        }
     }
+
+
+
 
     public static void printBoard(Board board) {
         for (Cell[] row : board.getBoard()) {
@@ -34,44 +37,41 @@ public class Board extends Pane {
             System.out.println("|");
         }
     }
+    /** Gibt eine Spielfeldzelle zurück.
+     * @param x Spaltenindex (horizontal).
+     * @param y Zeilenindex (vertikal).
+     * @return Referenz auf die Zelle oder 'null' bei ungültigem Index. */
 
-/*    public int getWidth() {
-        return width;
+    public Cell getCell(int x, int y) {
+        if (x < 0 || y < 0 || x >= board.length || y >= board[0].length) throw new NoSuchElementException();
+        return board[x][y];
     }
 
-    public int getHeight() {
-        return height;
-    }*/
+
+    public int getCols() {
+        return cols;
+    }
+
+    public int getRows() {
+        return rows;
+    }
 
     public Cell[][] getBoard() {
         return board;
     }
 
     public Cell get(int x, int y) {
-        if (x < 0 || x > width - 1 || y < 0 || y > height - 1) return null;
+        if (x < 0 || x > cols - 1 || y < 0 || y > rows - 1) return null;
         return board[x][y];
     }
 
     public void set(int x, int y, Cell cell) {
-        if (x < 0 || x > width - 1 || y < 0 || y > height - 1) {
+        if (x < 0 || x > cols - 1 || y < 0 || y > rows - 1) {
             System.out.println("THIS PLACE DOES NOT EXISTS");
         } else {
             board[x][y] = cell;
         }
 
-        /*// set the pos of cell in the board
-        double posX = cellSize*x;
-        double posY = cellSize*y;
-
-        //set the position of the cell
-        cell.setLayoutX(posX);
-        cell.setLayoutY(posY);
-
-        //set the size of one cell
-        //cell.setPrefWidth(cellSize);
-        //cell.setPrefHeight(cellSize);
-
-        getChildren().add(cell);*/
 
     }
 
@@ -79,31 +79,15 @@ public class Board extends Pane {
      * Change cell type of all types to default type.
      */
     public void setType( Cell.TYPE type) {
-
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                board[row][col].getStyleClass().clear();
                 board[row][col].setType( type);
             }
         }
     }
 
-    public void addOverlay(int x, int y, Cell cell){
-        // count of cells in the board
 
-        double posX = cellSize*x;
-        double posY = cellSize*y;
-
-        //set the style of the cell
-        cell.setLayoutX(posX);
-        cell.setLayoutY(posY);
-
-        cell.setPrefWidth(cellSize);
-        cell.setPrefWidth(cellSize);
-
-        //cell.getStyleClass().add("cell");
-
-        getChildren().add(cell);
-    }
 
     /**
      * Ensure the overlay cell is exactly over a grid cell
