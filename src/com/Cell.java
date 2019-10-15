@@ -77,8 +77,8 @@ public class Cell extends BorderPane {
                 getStyleClass().add("start");
                 break;
             case BLOCKED:
-                // TODO: Implement blocked self cost. (Infinity?)
                 getStyleClass().add("block");
+                setSelfCost(1000000000);
                 break;
             case END:
                 setSelfCost(1);

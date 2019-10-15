@@ -22,12 +22,7 @@
     -fx-pref-height: 500px;
     -fx-pref-width: 500px;
 }
-/*.open {
-    -fx-background-color: rgba(255,0,0,0.1);
-}
-.closed {
-    -fx-background-color: rgba(0,255,0,0.1);
-}*/
+
 /* important order: path must be after open and closed because a cell can be both. the last in the css overlaps the previous styles, no matter how you add them to the styleclass list */
 .path {
     -fx-background-color:derive(#247c3e,0.9);
