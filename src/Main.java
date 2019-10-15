@@ -30,11 +30,11 @@ public class Main extends Application{
         ====== SETTING THE BOARD ==============
          */
         //The board have 10 columns and 10 rows
-        Board board = new Board(8,8);
+        Board board = new Board(5,5);
         AStar astar = new AStar(board);
         //set start and end
         Cell start = new Cell(0,0);
-        Cell end = new Cell(board.getCols()-3,board.getRows()-3);
+        Cell end = new Cell(3,3);
 
 
          /*
@@ -204,26 +204,28 @@ public class Main extends Application{
         board.get(2, 1).setType(Cell.TYPE.BLOCKED);
         board.get(3, 1).setType(Cell.TYPE.BLOCKED);
 
-//        for (int row = 0; row < board.rows; row++) {
-//                for (int column = 0; column < board.cols; column++) {
-//
-//                    if (row == 1 && column > 6)
-//                        board.getCell(column, row).setType(Cell.TYPE.BLOCKED);
-//
-//                    if (row == 6 && column > 5)
-//                        board.getCell(column, row).setType(Cell.TYPE.BLOCKED);
-//
-//                    if (row > 1 && row < 6 && column == 7)
-//                        board.getCell(column, row).setType(Cell.TYPE.BLOCKED);
-//
-//                    if (row >= 0 && row < 7 && column == 2)
-//                        board.getCell(column, row).setType(Cell.TYPE.BLOCKED);
-//
-//                    if (row >= 4 && row <= 7 && column == 5)
-//                        board.getCell(column, row).setType(Cell.TYPE.BLOCKED);
-//
-//                }
-//        }
+/*
+        for (int row = 0; row < board.rows; row++) {
+                for (int column = 0; column < board.cols; column++) {
+
+                    if (row == 1 && column > 6)
+                        board.getCell(column, row).setType(Cell.TYPE.BLOCKED);
+
+                    if (row == 6 && column > 5)
+                        board.getCell(column, row).setType(Cell.TYPE.BLOCKED);
+
+                    if (row > 1 && row < 6 && column == 7)
+                        board.getCell(column, row).setType(Cell.TYPE.BLOCKED);
+
+                    if (row >= 0 && row < 7 && column == 2)
+                        board.getCell(column, row).setType(Cell.TYPE.BLOCKED);
+
+                    if (row >= 4 && row <= 7 && column == 5)
+                        board.getCell(column, row).setType(Cell.TYPE.BLOCKED);
+
+                }
+        }
+*/
     }
 //        /*
 //        Set up default to show the path
@@ -261,8 +263,8 @@ public class Main extends Application{
          */
         private void findWay(Cell start, Cell target){
             // generate a Path through the A* Algo
-            astar.setStart(start);
-            astar.setTarget(target);
+            astar.setStart(start.getX(),start.getY());
+            astar.setTarget(target.getX(),target.getY());
             List<Cell> path = astar.getPath();
 
             String context;
@@ -349,7 +351,6 @@ public class Main extends Application{
     /*
     ========== MAIN =====================================
      */
-
 
 
         public static void main(String[] args) {
