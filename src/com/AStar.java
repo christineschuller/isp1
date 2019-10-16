@@ -108,8 +108,8 @@ public class AStar {
             Cell neighbour = board.get(current.getX(), current.getY() + 1);
             if (neighbourSanityCheck(path, neighbour)) {
                 neighbours.add(neighbour);
-                updatePreviousCost(path, neighbour);
-            }
+            updatePreviousCost(path, neighbour);
+        }
 
             neighbour = board.get(current.getX() + 1, current.getY());
             if (neighbourSanityCheck(path, neighbour)) {
@@ -136,29 +136,29 @@ public class AStar {
             }
 
             //Diagonal neighbours - to be commented when Manhattan Heuristic is used
-            neighbour = board.get(current.getX() + 1, current.getY() + 1);
-            if (neighbourSanityCheck(path, neighbour)) {
-                neighbours.add(neighbour);
-                updatePreviousCost(path, neighbour);
-            }
-
-            neighbour = board.get(current.getX() + 1, current.getY() - 1);
-            if (neighbourSanityCheck(path, neighbour)) {
-                neighbours.add(neighbour);
-                updatePreviousCost(path, neighbour);
-            }
-
-            neighbour = board.get(current.getX() - 1, current.getY() - 1);
-            if (neighbourSanityCheck(path, neighbour)) {
-                neighbours.add(neighbour);
-                updatePreviousCost(path, neighbour);
-            }
-
-            neighbour = board.get(current.getX() - 1, current.getY() + 1);
-            if (neighbourSanityCheck(path, neighbour)) {
-                neighbours.add(neighbour);
-                updatePreviousCost(path, neighbour);
-            }
+//            neighbour = board.get(current.getX() + 1, current.getY() + 1);
+//            if (neighbourSanityCheck(path, neighbour)) {
+//                neighbours.add(neighbour);
+//                updatePreviousCost(path, neighbour);
+//            }
+//
+//            neighbour = board.get(current.getX() + 1, current.getY() - 1);
+//            if (neighbourSanityCheck(path, neighbour)) {
+//                neighbours.add(neighbour);
+//                updatePreviousCost(path, neighbour);
+//            }
+//
+//            neighbour = board.get(current.getX() - 1, current.getY() - 1);
+//            if (neighbourSanityCheck(path, neighbour)) {
+//                neighbours.add(neighbour);
+//                updatePreviousCost(path, neighbour);
+//            }
+//
+//            neighbour = board.get(current.getX() - 1, current.getY() + 1);
+//            if (neighbourSanityCheck(path, neighbour)) {
+//                neighbours.add(neighbour);
+//                updatePreviousCost(path, neighbour);
+//            }
 
      /*       if (neighbours.size() > 0) {
                 Cell bestNeighbour = neighbours.get(0);
@@ -214,6 +214,33 @@ public class AStar {
         }
         if(current!=target) System.out.println("Path couldn't be found");
         return path;
+    }
+
+    public void getDiagonalPath(Cell neighbour,Cell current,List<Cell> neighbours, List<Cell> path){
+        neighbour = board.get(current.getX() + 1, current.getY() + 1);
+            if (neighbourSanityCheck(path, neighbour)) {
+                neighbours.add(neighbour);
+                updatePreviousCost(path, neighbour);
+            }
+
+            neighbour = board.get(current.getX() + 1, current.getY() - 1);
+            if (neighbourSanityCheck(path, neighbour)) {
+                neighbours.add(neighbour);
+                updatePreviousCost(path, neighbour);
+            }
+
+            neighbour = board.get(current.getX() - 1, current.getY() - 1);
+            if (neighbourSanityCheck(path, neighbour)) {
+                neighbours.add(neighbour);
+                updatePreviousCost(path, neighbour);
+            }
+
+            neighbour = board.get(current.getX() - 1, current.getY() + 1);
+            if (neighbourSanityCheck(path, neighbour)) {
+                neighbours.add(neighbour);
+                updatePreviousCost(path, neighbour);
+            }
+
     }
 }
 

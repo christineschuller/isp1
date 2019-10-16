@@ -3,7 +3,7 @@ import java.util.List;
 import com.AStar;
 import com.Board;
 import com.Cell;
-import input.MouseDragGestures;
+//import input.MouseDragGestures;
 import input.MousePaintGestures;
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
@@ -40,7 +40,7 @@ public class Main extends Application{
            ====== CONSTANTS ==============
             */
         BooleanProperty showPathProperty = new SimpleBooleanProperty( true);
-        MouseDragGestures mouseDrag;
+        //MouseDragGestures mouseDrag;
 
         private boolean autoPath = true;
 
@@ -81,14 +81,14 @@ public class Main extends Application{
                     showWay();
                 });
 
-    /*            //show-hide path checkbox
-                CheckBox showPathCheckBox = new CheckBox("Show Way");
+                //show-hide path diagonal checkbox
+                CheckBox showPathCheckBox = new CheckBox("Show Diagonal");
                 showPathCheckBox.selectedProperty().bindBidirectional(
                 showPathProperty);
                 showPathProperty.addListener((ChangeListener<Boolean>) ((observable, oldValue, newValue) -> {
-                            repaintWay();
+
                     }
-                    ));*/
+                    ));
 
                 //Allow diagonals
                 //TODO
@@ -149,9 +149,9 @@ public class Main extends Application{
               start.toFront();
               end.toFront();
 
-                mouseDrag = new MouseDragGestures(board);
-                mouseDrag.makeDragable(start);
-                mouseDrag.makeDragable(end);
+                //mouseDrag = new MouseDragGestures(board);
+                //mouseDrag.makeDragable(start);
+                //mouseDrag.makeDragable(end);
 
 
                 createBlock();

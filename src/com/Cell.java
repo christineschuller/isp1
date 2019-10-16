@@ -62,8 +62,8 @@ public class Cell extends BorderPane {
 
     public void setType(Cell.TYPE type) {
 
-        setTop(new Label("(" + x + ", " + y + ")"));
-        setCenter(new Label(type.name().toLowerCase()));
+        setCenter(new Label("(" + x + ", " + y + ")"));
+        //setCenter(new Label(type.name().toLowerCase()));
 
         //remove existing type
         getStyleClass().clear();
